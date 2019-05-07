@@ -14,7 +14,7 @@ class Database_model extends CI_Model {
     }
     
     public function getAirportInfo($icao) {
-        $this->db->where('ident', $icao);
+        $this->db->where('icao', $icao);
         $query = $this->db->get('airports');
         
         return $query->result_array()['0'];
@@ -51,7 +51,14 @@ class Database_model extends CI_Model {
 	        $ctaf = $ctafArray['0']['freq'];
         }
         
-        return $ctaf; 
-               
+        return $ctaf;
+
+    }
+
+    public function getATISRules($icao) {
+        $this->db->where('ident', $icao);
+        $query = $this->db->get('rules');
+
+        return $query->result_array();
     }
 }
