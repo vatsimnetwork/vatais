@@ -309,6 +309,13 @@ switch (ENVIRONMENT)
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
  * --------------------------------------------------------------------
+ 
+  */
+require_once BASEPATH . 'dotenv/autoloader.php';
+
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+/*
  *
  * And away we go...
  */
