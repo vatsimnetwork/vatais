@@ -54,7 +54,18 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+if(! defined('ENVIRONMENT') )
+{
+    $domain = strtolower($_SERVER['HTTP_HOST']);
+    switch($domain) {
+        case 'ais.vatsim.net' :
+            define('ENVIRONMENT', 'production');
+            break;
+        default :
+            define('ENVIRONMENT', 'development');
+            break;
+    }
+}
 
 /*
  *---------------------------------------------------------------
