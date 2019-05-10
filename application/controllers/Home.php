@@ -8,28 +8,12 @@ class Home extends CI_Controller {
 		if ($this->input->server('REQUEST_METHOD') == 'POST') {
 			
 			$icao = $this->input->post('icao_id');
-			
-			if ($this->Database_model->validateICAO($icao)){
-				
-				$airportInfoArray = $this->Database_model->getAirportInfo($icao);
-				$ctafFreq = $this->Database_model->getCTAF($icao);
-			
-				$data = array(
-					'airportInfo' => $airportInfoArray,
-					'ctafFreq' => $ctafFreq
-				);
-				
-				$this->load->view('airport_view', $data);
-				
-			} else {
-				//you have entered an invalid ICAO.
-				$this->session->set_flashdata('message', '<div class="alert alert-warning">You have entered an invalid airport code or this airport is not in our database.</div>');
-				$this->load->view('home');
-			}
+
+			redirect('airport/view/' . $icao);
 			
 		} else {
 
-		$this->load->view('home');
+		$this->slice->view('public.home');
 		
 		}
 	}

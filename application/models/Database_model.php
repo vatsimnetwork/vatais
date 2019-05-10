@@ -3,7 +3,7 @@
 class Database_model extends CI_Model {
 
 	public function validateICAO($icao) {
-        $this->db->where('ident', $icao);
+        $this->db->where('icao', $icao);
         $query = $this->db->get('airports');
         
         if($query->num_rows() == 1) {
