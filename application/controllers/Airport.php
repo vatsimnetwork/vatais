@@ -10,7 +10,7 @@ class Airport extends CI_Controller {
             $airportInfoArray = $this->Database_model->getAirportInfo($icao);
             $ctafFreq = $this->Database_model->getCTAF($icao);
 
-            /*
+            
             $json = file_get_contents('https://avwx.rest/api/metar/'.$icao.'?options=&format=json&onfail=cache');
             $wxArray = json_decode($json);
 
@@ -20,7 +20,7 @@ class Airport extends CI_Controller {
             else {
                 $wx = $wxArray->raw;
             }
-            */
+
 
             $data = array(
                 'airportInfo' => $airportInfoArray,
