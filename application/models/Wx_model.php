@@ -6,13 +6,19 @@ class Wx_model extends CI_Model {
 
     public function getWind($icao)
     {
-        $json = file_get_contents('https://avwx.rest/api/metar/'.$icao.'?options=&format=json&onfail=cache');
-        $obj = json_decode($json);
+        $json = @file_get_contents('https://avwx.rest/api/metar/' . $icao . '?options=&format=json');
 
-        $windData['direction'] = $obj->wind_direction->value;
-        $windData['speed'] = $obj->wind_speed->value;
+        if($json === false) {
+            return false;
+        }
+        else {
+            $obj = json_decode($json);
 
-        return $windData;
+            $windData['direction'] = $obj->wind_direction->value;
+            $windData['speed'] = $obj->wind_speed->value;
+
+            return $windData;
+        }
     }
 
     public function pickRunway($runways, $wind)
@@ -31,16 +37,26 @@ class Wx_model extends CI_Model {
 
     public function makeAwis($icao)
     {
-        $airport = $this->Database_model->getAirportInfo($icao);
-        $awis = $this->Database_model->airportsWithAwis($icao);
-        $wind = $this->getWind($icao);
-        $runways = $this->Database_model->getAirportRunways($icao);
+        if($this->Database_model->validateICAO($icao) === true) {
+            $airport = $this->Database_model->getAirportInfo($icao);
+            $awis = $this->Database_model->airportsWithAwis($icao);
+            $wind = $this->getWind($icao);
+            $runways = $this->Database_model->getAirportRunways($icao);
 
-        $useRunway = $this->pickRunway($runways, $wind);
+            if ($wind === false) {
+                echo 'false';
+            } elseif($runways === false) {
+                echo 'false';
+            } else {
+                $useRunway = $this->pickRunway($runways, $wind);
 
-        //Required output: ICAO,NAME ,LAT,LONG,FREQ,DEPRWY,ARRRWY
-        $awis = $airport['icao'].','.$airport['name'].','.$airport['latitude_deg'].','.$airport['longitude_deg'].','.$awis['0']['freq'].','.$useRunway['ident'].','.$useRunway['ident'];
-        return $awis;
+                //Required output is:
+                //ICAO,AP_NAME,LAT,LONG,FREQ,DEP_RWY,ARR_RWY
+
+                $awis = $airport['icao'] . ',' . $airport['name'] . ',' . $airport['latitude_deg'] . ',' . $airport['longitude_deg'] . ',' . $awis['0']['freq'] . ',' . $useRunway['ident'] . ',' . $useRunway['ident'];
+                return $awis;
+            }
+        }
     }
 }
 ?>

@@ -7,9 +7,9 @@ class Database_model extends CI_Model {
         $query = $this->db->get('airports');
 
         if($query->num_rows() == 1) {
-	        return TRUE;
+	        return true;
         } else {
-	        return FALSE;
+	        return false;
         }
     }
     
@@ -49,41 +49,42 @@ class Database_model extends CI_Model {
 
         $result = $query->result_array();
 
-        //Add the opposite runway
-        foreach($result as $runway) {
-            $originalIdent = $runway['rwy_ident'];
-            $originalDir = preg_replace("/[^0-9]/", "", $runway['rwy_ident']).'0';
-            $oppositeDir = $originalDir - 360 + 180;
+        if($result['0']['rwy_ident'] != '') {
+            //Add the opposite runway
+            foreach ($result as $runway) {
+                $originalIdent = $runway['rwy_ident'];
+                $originalDir = preg_replace("/[^0-9]/", "", $runway['rwy_ident']) . '0';
+                $oppositeDir = $originalDir - 360 + 180;
 
-            if(strpos($originalIdent, 'L')) {
-                $opposite = substr($oppositeDir,0,-1);
-                $oppositeIdent = sprintf("%02d", $opposite).'R';
-            }
-            else if (strpos($originalIdent, 'R')) {
-                $opposite = substr($oppositeDir,0,-1);
-                $oppositeIdent = sprintf("%02d", $opposite).'L';
-            }
-            else if (strpos($originalIdent, 'C')) {
-                $opposite = substr($oppositeDir,0,-1);
-                $oppositeIdent = sprintf("%02d", $opposite).'C';
-            }
-            else {
-                $opposite = substr($oppositeDir,0,-1);
-                $oppositeIdent = sprintf("%02d", $opposite);
-            }
+                if (strpos($originalIdent, 'L')) {
+                    $opposite = substr($oppositeDir, 0, -1);
+                    $oppositeIdent = sprintf("%02d", $opposite) . 'R';
+                } else if (strpos($originalIdent, 'R')) {
+                    $opposite = substr($oppositeDir, 0, -1);
+                    $oppositeIdent = sprintf("%02d", $opposite) . 'L';
+                } else if (strpos($originalIdent, 'C')) {
+                    $opposite = substr($oppositeDir, 0, -1);
+                    $oppositeIdent = sprintf("%02d", $opposite) . 'C';
+                } else {
+                    $opposite = substr($oppositeDir, 0, -1);
+                    $oppositeIdent = sprintf("%02d", $opposite);
+                }
 
-            $runways[] = array(
-                'ident' => $originalIdent,
-                'direction' => $originalDir,
-            );
+                $runways[] = array(
+                    'ident' => $originalIdent,
+                    'direction' => $originalDir,
+                );
 
-            $runways[] = array(
-                'ident' => $oppositeIdent,
-                'direction' => $oppositeDir,
-            );
+                $runways[] = array(
+                    'ident' => $oppositeIdent,
+                    'direction' => $oppositeDir,
+                );
+            }
+            return $runways;
         }
-
-        return $runways;
+        else {
+            return false;
+        }
     }
 
     public function getFirList() {

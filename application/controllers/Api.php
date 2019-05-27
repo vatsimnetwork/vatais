@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * @property Database_model $Database_model
+ * @property Wx_model $Wx_model
  */
 class Api extends CI_Controller {
 
@@ -16,13 +17,9 @@ class Api extends CI_Controller {
         die;
     }
 
-    public function awis_all()
+    public function awis($icao)
     {
-        $airportsWithAwisArray = $this->Database_model->airportsWithAwis();
-        foreach($airportsWithAwisArray as $airport) {
-            echo $this->Wx_model->makeAwis($airport['icao']);
-            echo '<br>';
-        }
+        echo $this->Wx_model->makeAwis($icao);
     }
 
     public function atis($icao)
