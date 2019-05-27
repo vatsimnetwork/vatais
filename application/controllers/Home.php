@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property Database_model $Database_model
+ */
 class Home extends CI_Controller {
 
 	public function index()

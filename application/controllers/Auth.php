@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @property Database_model $Database_model
+ * @property User_model $User_model
+ */
 class Auth extends CI_Controller {
 
     public function __construct()
@@ -64,22 +68,16 @@ class Auth extends CI_Controller {
                             'logged_in' => TRUE
                         );
 
-                        if($this->User->isStaff($user->user->id))
+                        if($this->User_model->isStaff($user->user->id))
                         {
                             //The user is in the manager database.
                             $date = new DateTime();
                             $now = $date->getTimestamp();
-                            $this->User->updateUserLogin($user->user->id, $now, $user->user->email, $user->user->name_first, $user->user->name_last, $user->user->rating->short);
+                            $this->User_model->updateUserLogin($user->user->id, $now, $user->user->email, $user->user->name_first, $user->user->name_last, $user->user->rating->short);
 
                             $this->session->set_userdata($sessiondata);
                             redirect('');
                         }
-                        else
-                        {
-                            //echo '<script>$(document).ready(function(){ alert("You are not authorised to access this page.");}';
-                            $this->load->view('Authmodel');
-                        }
-
                         // do not proceed to send the user back to VATSIM
                         die();
                     } else {

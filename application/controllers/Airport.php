@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property Database_model $Database_model
+ * @property Wx_model $Wx_model
+ */
 class Airport extends CI_Controller {
 
 	public function view($icao)
@@ -10,22 +13,24 @@ class Airport extends CI_Controller {
             $airportInfoArray = $this->Database_model->getAirportInfo($icao);
             $ctafFreq = $this->Database_model->getCTAF($icao);
 
-            
-            $json = file_get_contents('https://avwx.rest/api/metar/'.$icao.'?options=&format=json&onfail=cache');
-            $wxArray = json_decode($json);
+            $metar = $this->Wx_model->getMetar($icao);
+            /*
+            $metarDecode = $this->Wx_model->decode();
 
-            if(empty($wx)) {
-                $wx = 'No WX data. Sorry!';
+            echo $metarDecode;
+            /*
+            if($metarDecode->isValid()) {
+                $wx = $metarDecode;
             }
             else {
-                $wx = $wxArray->raw;
+                $wx = 'No WX Data';
             }
-
+            */
 
             $data = array(
                 'airportInfo' => $airportInfoArray,
                 'ctafFreq' => $ctafFreq,
-                'metar' => 'No WX Data.',
+                'metar' => $metar,
             );
 
             $this->slice->view('public.airport', $data);

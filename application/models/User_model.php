@@ -1,21 +1,7 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 class User_model extends CI_Model {
-        
-    public function isStaff($id)
-    {
-        $this->db->where('id', $id);
-        $query = $this->db->get('staff');
-        
-        if ($query->num_rows() > 0)
-        {
-	        return TRUE;
-	    }
-	    else
-	    {
-	        return FALSE;
-	    }
-    }
-    
+
     public function updateUserLogin($id, $time, $email, $fname, $lname, $rating)
     {
         $data = array(
@@ -23,17 +9,17 @@ class User_model extends CI_Model {
 	        'lastLogin' => $time,
 	        'fname' => $fname,
 	        'lname' => $lname,
-	        'rating' => $rating
+	        'division' => $rating
 		);
 		
-		$this->db->where('id', $id);
-		$this->db->update('staff', $data);
+		$this->db->where('id', $id)
+		    ->update('users', $data);
     }
     
-    public function getInfo($id)
+    public function get($id)
     {
-        $this->db->where('id', $id);
-        $query = $this->db->get('staff');
+        $query = $this->db->where('id', $id)
+            ->get('users');
 		
 		$result = $query->result_array();
 		
@@ -71,21 +57,10 @@ class User_model extends CI_Model {
 	    }
     }
     
-    public function removeStaff($id)
+    public function delete($id)
     {
        $this->db->where('id', $id);
-	   $this->db->delete('staff'); 
+	   $this->db->delete('user');
     }
-    
-    public function getQual($id)
-    {
-        $this->db->where('id', $id);
-        $query = $this->db->get('staff');
-		
-		$result = $query->result_array();
-		
-		return $result['0']['qual'];
-    }
-        	
 }
 ?>

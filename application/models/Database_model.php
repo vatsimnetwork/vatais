@@ -1,11 +1,11 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	
 class Database_model extends CI_Model {
 
 	public function validateICAO($icao) {
         $this->db->where('icao', $icao);
         $query = $this->db->get('airports');
-        
+
         if($query->num_rows() == 1) {
 	        return TRUE;
         } else {
@@ -18,6 +18,12 @@ class Database_model extends CI_Model {
         $query = $this->db->get('airports');
         
         return $query->result_array()['0'];
+    }
+
+    public function getFirList() {
+        $query = $this->db->get('firs');
+
+        return $query->result_array();
     }
     
     public function getAirportFreqs($icao) {
