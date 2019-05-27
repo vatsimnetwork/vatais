@@ -11,9 +11,9 @@ class Airport extends CI_Controller {
         if ($this->Database_model->validateICAO($icao)){
 
             $airportInfoArray = $this->Database_model->getAirportInfo($icao);
-            $ctafFreq = $this->Database_model->getCTAF($icao);
+            //$ctafFreq = $this->Database_model->getCTAF($icao);
 
-            $metar = $this->Wx_model->getMetar($icao);
+            //$metar = $this->Wx_model->getMetar($icao);
             /*
             $metarDecode = $this->Wx_model->decode();
 
@@ -29,8 +29,6 @@ class Airport extends CI_Controller {
 
             $data = array(
                 'airportInfo' => $airportInfoArray,
-                'ctafFreq' => $ctafFreq,
-                'metar' => $metar,
             );
 
             $this->slice->view('public.airport', $data);

@@ -1,32 +1,47 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(FCPATH.'assets/MetarDecoder/MetarDecoder.inc.php');
-include(FCPATH.'assets/MetarDecoder/util.php');
-use utilphp\util;
+require_once(FCPATH.'assets/MetarDecoder/MetarDecoder.php');
 
 class Wx_model extends CI_Model {
 
-    public function getMetar($icao)
+    public function getWind($icao)
     {
-        $metar = file('http://metar.vatsim.net/metar.php?id='.$icao);
-        return $metar['0'];
+        $json = file_get_contents('https://avwx.rest/api/metar/'.$icao.'?options=&format=json&onfail=cache');
+        $obj = json_decode($json);
+
+        $windData['direction'] = $obj->wind_direction->value;
+        $windData['speed'] = $obj->wind_speed->value;
+
+        return $windData;
     }
 
-    public function decode($raw)
+    public function pickRunway($runways, $wind)
     {
-        $decoder = new MetarDecoder\MetarDecoder();
-        $d = $decoder->parse($raw);
+        $closest = null;
+        foreach ($runways as $item) {
+            $wind = $wind['direction'];
+            $runway = $item['direction'];
 
-        $raw_dump = util::var_dump($d,true,2);
-        $to_delete=array(
-            'private:MetarDecoder\\Entity\\DecodedMetar:',
-            'private:MetarDecoder\\Entity\\',
-            'MetarDecoder\\Entity\\',
-            'Value:'
-        );
-        $clean_dump = str_replace($to_delete,'',$raw_dump);
-        return array($clean_dump);
+            if ($closest === null || abs($wind - $runway) > abs($runway - $wind)) {
+                $closest = $item;
+            }
+        }
+        return $closest;
     }
 
+    public function makeAwis($icao)
+    {
+        $airport = $this->Database_model->getAirportInfo($icao);
+        $awis = $this->Database_model->airportsWithAwis($icao);
+        $wind = $this->getWind($icao);
+        $runways = $this->Database_model->getAirportRunways($icao);
+
+        $useRunway = $this->pickRunway($runways, $wind);
+
+        //Required output
+        //EGAA,Aldergrove ,54.6575,6.231666667,126.125,DepRwy,ArrRwy
+        $awis = $airport['icao'].','.$airport['name'].','.$airport['latitude_deg'].','.$airport['longitude_deg'].','.$awis['0']['freq'].','.$useRunway['ident'].','.$useRunway['ident'];
+        return $awis;
+    }
 }
 ?>

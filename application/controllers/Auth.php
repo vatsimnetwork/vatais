@@ -7,21 +7,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Auth extends CI_Controller {
 
-    public function __construct()
+    public function sso()
     {
-        parent::__construct();
         if ($this->session->userdata('logged_in')) {
             redirect('');
         }
-    }
-
-    public function login()
-    {
-        $this->slice->view('auth.login');
-    }
-
-    public function sso()
-    {
             // Find redirection location
             if(isset($_GET['redirect']))
             {
@@ -65,17 +55,16 @@ class Auth extends CI_Controller {
 
                         $sessiondata = array(
                             'id'  => $user->user->id,
-                            'logged_in' => TRUE
+                            'logged_in' => true
                         );
-
-                        if($this->User_model->isStaff($user->user->id))
-                        {
-                            //The user is in the manager database.
-                            $date = new DateTime();
-                            $now = $date->getTimestamp();
-                            $this->User_model->updateUserLogin($user->user->id, $now, $user->user->email, $user->user->name_first, $user->user->name_last, $user->user->rating->short);
+                        if($this->User_model->userExists($user->user->id)) {
+                            $this->User_model->updateUserLogin($user->user->id, $user->user->email, $user->user->name_first, $user->user->name_last);
 
                             $this->session->set_userdata($sessiondata);
+                            redirect('');
+                        }
+                        else {
+                            //TODO: swal alert.
                             redirect('');
                         }
                         // do not proceed to send the user back to VATSIM

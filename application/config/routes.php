@@ -53,3 +53,4 @@ $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['api/fir/list'] = 'api/fir_list';
+$route['api/awis/all'] = 'api/awis_all';

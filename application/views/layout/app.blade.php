@@ -28,11 +28,19 @@
 </div>
 @yield('content')
 
-<footer class="footer">
-    <div class="container text-center">
-        <span class="text-muted"><a role="button" class="btn btn-dark" href="{{ site_url('auth/login') }}">Division Login</a></span>
-    </div>
-</footer>
+@if ($this->session->userdata('logged_in') === true)
+    <footer class="footer">
+        <div class="container text-center">
+            <span class="text-muted"><a role="button" class="btn btn-dark" href="{{ site_url('auth/logout') }}">Logout</a></span>
+        </div>
+    </footer>
+@else
+    <footer class="footer">
+        <div class="container text-center">
+            <span class="text-muted"><a role="button" class="btn btn-dark" href="{{ site_url('auth/sso') }}">Manager Login</a></span>
+        </div>
+    </footer>
+@endif
 
 </body>
 

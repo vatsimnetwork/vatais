@@ -2,18 +2,29 @@
 
 class User_model extends CI_Model {
 
-    public function updateUserLogin($id, $time, $email, $fname, $lname, $rating)
+    public function updateUserLogin($id, $email, $fname, $lname)
     {
         $data = array(
         	'email' => $email,
-	        'lastLogin' => $time,
 	        'fname' => $fname,
-	        'lname' => $lname,
-	        'division' => $rating
+	        'lname' => $lname
 		);
 		
 		$this->db->where('id', $id)
 		    ->update('users', $data);
+    }
+
+    public function userExists($id)
+    {
+        $query = $this->db->where('id', $id)
+            ->get('users');
+
+        if($query->num_rows() > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     public function get($id)
@@ -25,38 +36,7 @@ class User_model extends CI_Model {
 		
 		return $result['0'];
     }
-    
-    public function isAdmin($id)
-    {
-        $this->db->where('id', $id);
-        $this->db->where('isadmin', '1');
-        $query = $this->db->get('staff');
-		
-		if ($query->num_rows() > 0)
-        {
-	        return TRUE;
-	    }
-	    else
-	    {
-	        return FALSE;
-	    }
-    }
-    
-    public function isUnique($id)
-    {
-        $this->db->where('id', $id);
-        $query = $this->db->get('staff');
-		
-		if ($query->num_rows() > 0)
-        {
-	        return FALSE;
-	    }
-	    else
-	    {
-	        return TRUE;
-	    }
-    }
-    
+
     public function delete($id)
     {
        $this->db->where('id', $id);

@@ -16,6 +16,15 @@ class Api extends CI_Controller {
         die;
     }
 
+    public function awis_all()
+    {
+        $airportsWithAwisArray = $this->Database_model->airportsWithAwis();
+        foreach($airportsWithAwisArray as $airport) {
+            echo $this->Wx_model->makeAwis($airport['icao']);
+            echo '<br>';
+        }
+    }
+
     public function atis($icao)
     {
         $data['airportInfo'] = $this->Database_model->getAirportInfo($icao);
