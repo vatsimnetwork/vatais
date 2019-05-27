@@ -23,7 +23,24 @@ class Database_model extends CI_Model {
     public function airportsWithAwis() {
         $query = $this->db->get('awis');
 
-        return $query->result_array();
+        if($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getAwis($icao) {
+        $query = $this->db->where('icao', $icao)
+            ->get('awis');
+
+        if($query->num_rows() > 0) {
+            return $query->result_array()['0'];
+        }
+        else {
+            return false;
+        }
     }
 
     public function getAirportRunways($icao) {

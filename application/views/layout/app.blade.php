@@ -22,7 +22,7 @@
     <div class="text-center">
         <img class="mb-4" src="https://www.vatsim.net/sites/default/files/vatsim_0.png">
         <h1 class="h3 mb-3 font-weight-normal">VATSIM Aeronautical Information Service</h1>
-        <p class="alert alert-danger">This data is served by VATSIM and is intended for flight simulation use ONLY.<br /> <a href="{{ site_url('sources') }}">View our sources</a>.</p>
+        <p class="alert alert-danger">This data is served by VATSIM and is intended for flight simulation use ONLY.</p>
     </div>
     <hr />
 </div>

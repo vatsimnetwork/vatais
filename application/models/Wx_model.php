@@ -38,8 +38,7 @@ class Wx_model extends CI_Model {
 
         $useRunway = $this->pickRunway($runways, $wind);
 
-        //Required output
-        //EGAA,Aldergrove ,54.6575,6.231666667,126.125,DepRwy,ArrRwy
+        //Required output: ICAO,NAME ,LAT,LONG,FREQ,DEPRWY,ARRRWY
         $awis = $airport['icao'].','.$airport['name'].','.$airport['latitude_deg'].','.$airport['longitude_deg'].','.$awis['0']['freq'].','.$useRunway['ident'].','.$useRunway['ident'];
         return $awis;
     }

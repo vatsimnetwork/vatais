@@ -13,20 +13,6 @@ class Airport extends CI_Controller {
             $airportInfoArray = $this->Database_model->getAirportInfo($icao);
             //$ctafFreq = $this->Database_model->getCTAF($icao);
 
-            //$metar = $this->Wx_model->getMetar($icao);
-            /*
-            $metarDecode = $this->Wx_model->decode();
-
-            echo $metarDecode;
-            /*
-            if($metarDecode->isValid()) {
-                $wx = $metarDecode;
-            }
-            else {
-                $wx = 'No WX Data';
-            }
-            */
-
             $data = array(
                 'airportInfo' => $airportInfoArray,
             );
@@ -46,6 +32,26 @@ class Airport extends CI_Controller {
         $data['ctafFreq'] = $this->Database_model->getCTAF($icao);
 
         $this->slice->view('public.airpot', $data);
+    }
+
+    public function save_awis($icao)
+    {
+        if($this->session->userdata('logged_in')) {
+            if($this->input->post('status') === 'enable') {
+                $data = array(
+                    'freq' => $this->input->post('freq'),
+                    'icao' => $icao
+                );
+                $this->db->insert('awis', $data);
+                //TODO: Swal Alert.
+            }
+            elseif($this->input->post('status') === 'disable') {
+                $this->db->where('icao', $icao)
+                    ->delete('awis');
+                //TODO: Swal Alert.
+            }
+        }
+        redirect('airport/view/'.$icao);
     }
 	
 }
